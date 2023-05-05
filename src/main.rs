@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 
 const PADDLE_SPEED:f32 = 10f32;
-const BALL_SPEED:f32 = 10f32;
+const BALL_SPEED:f32 = 7.5f32;
 
 #[macroquad::main("Breakout")]
 async fn main() {
