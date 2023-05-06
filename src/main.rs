@@ -8,27 +8,9 @@ const BALL_SPEED:f32 = 7.5f32;
 
 #[macroquad::main("Breakout")]
 async fn main() {
-    let mut player = actor::Player::new(
-        Vec2::new(
-            screen_width() / 2.0 - 50.0,
-            screen_height() - 20.0 - 20.0,
-        ),
-        Vec2::new(100.0, 20.0),
-    );
+    let mut player = create_player();
 
-    let mut ball = item::Ball::new(
-        Vec2::new(
-            screen_width() / 2.0 - 10.0,
-            screen_height() / 2.0 - 10.0,
-        ),
-        Vec2::new(20.0, 20.0),
-        Vec2::new(
-            // rng.gen_range(-1.0..1.),
-            // rng.gen_range(-1.0..1.)
-            0.0,
-            1.0,
-        )
-    );
+    let mut ball = create_ball();
 
     loop {
         clear_background(BLACK);
@@ -43,21 +25,33 @@ async fn main() {
         ball.draw();
 
         if ball.pos.y >= screen_height() {
-            ball = item::Ball::new(
-                Vec2::new(
-                    screen_width() / 2.0 - 10.0,
-                    screen_height() / 2.0 - 10.0,
-                ),
-                Vec2::new(20.0, 20.0),
-                Vec2::new(
-                    // rng.gen_range(-1.0..1.),
-                    // rng.gen_range(-1.0..1.)
-                    0.0,
-                    1.0,
-                )
-            );
+            ball = create_ball();
         }
         
         next_frame().await
     }
+}
+
+fn create_player() -> actor::Player {
+    actor::Player::new(
+        Vec2::new(
+            screen_width() / 2.0 - 50.0,
+            screen_height() - 20.0 - 20.0,
+        ),
+        Vec2::new(100.0, 20.0),
+    )
+}
+
+fn create_ball() -> item::Ball {
+    item::Ball::new(
+        Vec2::new(
+            screen_width() / 2.0 - 10.0,
+            screen_height() / 2.0 - 10.0,
+        ),
+        Vec2::new(20.0, 20.0),
+        Vec2::new(
+            0.0,
+            1.0,
+        )
+    )
 }
