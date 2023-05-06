@@ -1,6 +1,8 @@
 use macroquad::prelude::*;
 
+
 use super::BALL_SPEED;
+use super::target::Target;
 use super::actor;
 
 pub(crate) struct Ball {
@@ -22,7 +24,11 @@ impl Ball {
         }
     }
     
-    pub(crate) fn update(&mut self, player: &actor::Player) {
+    pub(crate) fn update(
+        &mut self,
+        player: &actor::Player,
+        targets: &mut Vec<Target>)
+    {
         
         let mut dir = self.vel.normalize();
         dir.x *= BALL_SPEED;
@@ -37,10 +43,11 @@ impl Ball {
             self.vel.y *= -1.0;
         }
 
-        self.collision(player);
+        self.collision_player(player);
+        self.collision_targets(targets);
     }
 
-    fn collision(&mut self, player: &actor::Player) {
+    fn collision_player(&mut self, player: &actor::Player) {
 
         // let x1 = Vec2::new(player.pos.x, player.pos.x + player.sye.x / 5.0);
         // let x2 = Vec2::new(player.pos.x + player.sye.x / 5.0, player.pos.x + (player.sye.x / 5.0) * 4.0);
@@ -85,5 +92,22 @@ impl Ball {
             self.sye.y,
             WHITE,
         );
+    }
+
+    fn collision_targets(&mut self, targets: &mut Vec<Target>) {
+        for target in targets.iter_mut() {
+            if
+                self.pos.x > target.pos.x && self.pos.x < target.pos.x + target.sye.x
+             || self.pos.x + self.sye.x > target.pos.x && self.pos.x + self.sye.x < target.pos.x + target.sye.x
+            {
+                if
+                    self.pos.y > target.pos.y && self.pos.y < target.pos.y + target.sye.y
+                 || self.pos.y + self.sye.y > target.pos.y && self.pos.y + self.sye.y < target.pos.y + target.sye.y
+                {
+                    target.update();
+                    self.vel.y *= -1.0;
+                }
+            }
+        }
     }
 }

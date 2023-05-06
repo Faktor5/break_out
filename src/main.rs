@@ -2,6 +2,8 @@ use macroquad::prelude::*;
 
 mod actor;
 mod item;
+mod target;
+mod to;
 
 const PADDLE_SPEED:f32 = 10f32;
 const BALL_SPEED:f32 = 7.5f32;
@@ -20,8 +22,9 @@ async fn main() {
     
     rand::srand(105);
     
-    let mut player = create_player();
-    let mut ball = create_ball();
+    let mut player = to::create_player();
+    let mut ball = to::create_ball();
+    let mut targets = to::create_targets();
 
     loop {
         clear_background(BLACK);
@@ -29,37 +32,17 @@ async fn main() {
         player.update(KeyCode::W,KeyCode::E,);
         player.draw();
 
-        ball.update(&player);
+        ball.update(&player, &mut targets);
         ball.draw();
 
         if ball.pos.y >= screen_height() {
-            ball = create_ball();
+            ball = to::create_ball();
+            targets = to::create_targets();
         }
+
+        targets.retain(|t| t.is_alive());
+        targets.iter_mut().for_each(|t| t.draw());
 
         next_frame().await
     }
-}
-
-fn create_player() -> actor::Player {
-    actor::Player::new(
-        Vec2::new(
-            screen_width() / 2.0 - 50.0,
-            screen_height() - 20.0 - 20.0,
-        ),
-        Vec2::new(100.0, 20.0),
-    )
-}
-
-fn create_ball() -> item::Ball {
-    item::Ball::new(
-        Vec2::new(
-            screen_width() / 2.0 - 10.0,
-            screen_height() / 2.0 - 10.0,
-        ),
-        Vec2::new(15., 15.),
-        Vec2::new(
-            rand::gen_range(-0.75, 0.75),
-            1.,
-        )
-    )
 }
