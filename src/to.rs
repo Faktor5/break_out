@@ -5,32 +5,26 @@ use super::item;
 
 pub(crate) fn create_targets() -> Vec<target::Target> {
     let mut targets = Vec::<target::Target>::new();
-    targets.push(target::Target::new(
-        Vec2::new(
-            screen_width() / 2.0 - 200.,
-            screen_height() / 2.0 - 200.,
-        ),
-        Vec2::new(80.0, 20.0),
-        3,
-    ));
-    targets.push(target::Target::new(
-        Vec2::new(
-            screen_width() / 2.0 - 100.,
-            screen_height() / 2.0 - 200.,
-        ),
-        Vec2::new(80.0, 20.0),
-        2,
-    ));
-    targets.push(target::Target::new(
-        Vec2::new(
-            screen_width() / 2.0,
-            screen_height() / 2.0 - 200.,
-        ),
-        Vec2::new(80.0, 20.0),
-        3,
-    ));
+    
+    let screen_width = screen_width();
+    let screen_height = screen_height();
 
-    targets
+    // create targets like a grid of 10x5 targets
+    for y in 0..5 {
+        for x in 0..10 {
+            let pos = Vec2::new(
+                (screen_width / 10.0) * x as f32 + 5.0,
+                (screen_height / 10.0) * y as f32 + 5.0,
+            );
+            let sye = Vec2::new(
+                screen_width / 10.0 - 10.0,
+                screen_height / 10.0 - 10.0,
+            );
+            targets.push(target::Target::new(pos, sye, 1));
+        }
+    }
+
+    return targets;
 }
 
 pub(crate) fn create_player() -> actor::Player {
